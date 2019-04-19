@@ -34,7 +34,7 @@ const styles = {
 function Mic(props) {
     const {classes, interimTranscript, listening, browserSupportsSpeechRecognition, startListening, stopListening} = props;
     if (!browserSupportsSpeechRecognition) {
-        return;
+        return <span/>;
     }
 
     const [voiceQuery, setVoiceQuery] = useState(false);
