@@ -1,5 +1,5 @@
 from time import time
-from vector_model import *
+from vector_model_LSA import *
 import numpy as np
 import os
 import json
@@ -10,7 +10,7 @@ class RankingHandler(tornado.web.RequestHandler):
     def get(self):
         start = time()
         q = self.get_argument('q')
-        res = ranking(q)
+        res = ranking(q, docs, U, invS)
         self.write(json.dumps({'results':res, 'time': np.round(time()-start,3)}))
 
 class MyFileHandler(tornado.web.StaticFileHandler):

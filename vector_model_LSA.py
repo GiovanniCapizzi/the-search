@@ -1,7 +1,11 @@
+# https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html#scipy.sparse.csc_matrix
+from scipy.sparse import csc_matrix
+from scipy.sparse.linalg import svds
+from scipy.linalg import inv
 import re
 import nltk
 from pathlib import Path
-from nltk.book import *
+# from nltk.book import *
 from nltk import FreqDist
 import numpy as np
 
@@ -81,11 +85,11 @@ def TF_IDF_table(TF:np.ndarray)->np.ndarray:
                 TF_IDF[i][j] = np.round(TF[i][j] * np.log2(N/ni),3)
     return TF_IDF
 
-def sim(dj:np.ndarray, q:np.ndarray):
+def sim(dj:csc_matrix, q:csc_matrix):
     """
         compute the cosine similarity between dj and the query q. The two parameters must have same length!
     """
-    return np.sum(dj*q) / (np.sqrt(np.sum(dj**2))*np.sqrt(np.sum(q**2)))
+    return np.dot(dj, q.T) / (np.sqrt(np.sum(dj.power(2)))*np.sqrt(np.sum(q.power(2))))
     
 def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
     """
@@ -101,16 +105,26 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
             out[i] = np.round(tf_ij(fdist[v])*np.log2(N/ni),3)
     return np.array(out)
 
+def documents_ranking(TF_IDF, U:csc_matrix, invS:csc_matrix)->list:
+    m,n = TF_IDF.shape
+    res = []
+    for j in range(n):
+        res.append(TF_IDF[:,j].T @ U @ invS)                       
+    return np.array(res)
 
-def ranking(query:str)->list:
+
+def ranking(query:str, docs:list, U:csc_matrix, invS:csc_matrix)->list:
     q = query_process(TF, V, query)
     if not sum(q):
         return []
+    qk = csc_matrix(q.T @ U @ invS)                                
+    
     ranks = []
-    for j in range(len(TF[0])):
-        ranks.append(sim(TF_IDF[:,j], np.array(q)))
+    for doc in rdocs:                                              # rdocs must be in order
+        ranks.append(sim(doc, qk))
+
     ranks = sorted(enumerate(ranks), key=lambda t: t[1], reverse=True)
-    ranks = list(filter(lambda t: t[1]!=0, ranks))
+    ranks = list(filter(lambda t: t[1]>0.1, ranks))
     result = []
     for id, _ in ranks:
         res : dict = {}
@@ -124,7 +138,7 @@ def ranking(query:str)->list:
     
 docs = parse_xml()
 texts = tokenize_all(docs)
-#texts.extend([text1,text2,text3,text4,text5,text6,text7,text8,text9])
+# texts.extend([text1,text2,text3,text4,text5,text6,text7,text8,text9])
 fdists = frequencies(texts)
 V = vocabulary(texts) 
 
@@ -138,4 +152,15 @@ else:
     TF_IDF = TF_IDF_table(TF)
     np.savez_compressed('./tables', tf=TF, tf_idf=TF_IDF)
 
+# CSC for column slicing
+TF_IDF = csc_matrix(TF_IDF)                                         
+
+U, S, Vt = svds(TF_IDF, k=2*min(TF_IDF.shape)//3) 
+U = csc_matrix(U)
+
+invS = np.divide(1,S, out=np.zeros_like(S), where=S!=0)
+invS = csc_matrix(np.diag(invS))
+rdocs = documents_ranking(TF_IDF, U, invS)
+
 print("\nReady")
+
