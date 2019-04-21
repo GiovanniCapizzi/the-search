@@ -1,4 +1,4 @@
-
+﻿
 # Created by https://www.gitignore.io/api/node,python,webstorm
 # Edit at https://www.gitignore.io/?templates=node,python,webstorm
 
@@ -291,5 +291,7 @@ fabric.properties
 
 # Sonarlint plugin
 .idea/sonarlint
+
+.idea
 
 # End of https://www.gitignore.io/api/node,python,webstorm
