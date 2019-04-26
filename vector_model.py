@@ -75,9 +75,9 @@ def TF_IDF_table(TF:np.ndarray)->np.ndarray:
     M,N = TF.shape   
     TF_IDF = TF.copy()
     for i in range(M):
+        ni = sum(TF[i,:]!=0)
         for j in range(N):
-            if TF[i][j]:
-                ni = sum(TF[i,:]!=0) 
+            if TF[i][j]: 
                 TF_IDF[i][j] = np.round(TF[i][j] * np.log2(N/ni),3)
     return TF_IDF
 
@@ -92,7 +92,7 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
         Returns the query rappresentation as IF_TDF columns, as if it was a document
     """
     _,N = TF.shape  
-    q = tokenize(query.lower())
+    q = tokenize(query)
     fdist = FreqDist(q)
     out = np.full(len(V), 0.0)
     for i,v in enumerate(V):
