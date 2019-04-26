@@ -96,7 +96,7 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
         Returns the query rappresentation as IF_TDF columns, as if it was a document
     """
     _,N = TF.shape  
-    q = tokenize(query)
+    q = tokenize(query.lower())
     fdist = FreqDist(q)
     out = np.full(len(V), 0.0)
     for i,v in enumerate(V):
