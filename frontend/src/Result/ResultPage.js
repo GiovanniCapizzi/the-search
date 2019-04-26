@@ -143,6 +143,12 @@ function ResultPage(props) {
 
     const results = resultList.map((obj, i) => {
         const {title, uri, content} = obj;
+        const resContent = content.split(' ').map((word)=>{
+            if(mQuery.includes(word)){
+                return <b>{word} </b>
+            }
+            return <span>{word} </span>
+        });
         return <div className={classes.results} key={i}>
             <Typography style={{fontSize: 18}}>
                 <span style={{color: "#1a0dab"}}>{title}</span>
@@ -151,7 +157,7 @@ function ResultPage(props) {
                 <span style={{color: "#006621"}}>{uri}</span>
             </Typography>
             <Typography component="p">
-                <span style={{color: "#545454"}}>{content}</span>
+                <span style={{color: "#545454"}}>{resContent}</span>
             </Typography>
         </div>
 

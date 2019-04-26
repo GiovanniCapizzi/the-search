@@ -105,7 +105,7 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
             out[i] = np.round(tf_ij(fdist[v])*np.log2(N/ni),3)
     return np.array(out)
 
-def documents_ranking(TF_IDF, U:csc_matrix, invS:csc_matrix)->list:
+def documents_vectors(TF_IDF, U:csc_matrix, invS:csc_matrix)->list:
     m,n = TF_IDF.shape
     res = []
     for j in range(n):
@@ -160,7 +160,7 @@ U = csc_matrix(U)
 
 invS = np.divide(1,S, out=np.zeros_like(S), where=S!=0)
 invS = csc_matrix(np.diag(invS))
-rdocs = documents_ranking(TF_IDF, U, invS)
+rdocs = documents_vectors(TF_IDF, U, invS)
 
 print("\nReady")
 
