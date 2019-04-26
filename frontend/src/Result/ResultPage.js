@@ -143,8 +143,9 @@ function ResultPage(props) {
 
     const results = resultList.map((obj, i) => {
         const {title, uri, content} = obj;
+        const resQuery = mQuery.split(' ');
         const resContent = content.split(' ').map((word)=>{
-            if(mQuery.includes(word)){
+            if(resQuery.includes(word)){
                 return <b>{word} </b>
             }
             return <span>{word} </span>
