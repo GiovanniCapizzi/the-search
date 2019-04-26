@@ -96,8 +96,8 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
     fdist = FreqDist(q)
     out = np.full(len(V), 0.0)
     for i,v in enumerate(V):
+        ni = sum(TF[i,:]!=0) 
         if v in fdist:
-            ni = sum(TF[i,:]!=0) 
             out[i] = np.round(tf_ij(fdist[v])*np.log2(N/ni),3)
     return np.array(out)
 
