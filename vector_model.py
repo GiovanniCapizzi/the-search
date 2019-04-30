@@ -78,7 +78,7 @@ def TF_IDF_table(TF:np.ndarray)->np.ndarray:
         ni = sum(TF[i,:]!=0)
         for j in range(N):
             if TF[i][j]: 
-                TF_IDF[i][j] = np.round(TF[i][j] * np.log2(N/ni),3)
+                TF_IDF[i][j] = TF[i][j] * np.log2(N/ni)
     return TF_IDF
 
 def sim(dj:np.ndarray, q:np.ndarray):
@@ -98,7 +98,7 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
     for i,v in enumerate(V):
         if v in fdist:
             ni = sum(TF[i,:]!=0) # ni+1 N+1?
-            out[i] = np.round(tf_ij(fdist[v])*np.log2(N/ni),3)
+            out[i] = tf_ij(fdist[v])*np.log2(N/ni)
     return np.array(out)
 
 

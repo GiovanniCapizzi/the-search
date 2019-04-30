@@ -82,7 +82,7 @@ def TF_IDF_table(TF:np.ndarray)->np.ndarray:
         ni = sum(TF[i,:]!=0)
         for j in range(N):
             if TF[i][j]: 
-                TF_IDF[i][j] = np.round(TF[i][j] * np.log2(N/ni),3)
+                TF_IDF[i][j] = TF[i][j] * np.log2(N/ni)
     return TF_IDF
 
 def sim(dj:csc_matrix, q:csc_matrix):
@@ -102,7 +102,7 @@ def query_process(TF:np.ndarray, V:set, query:str)->np.ndarray:
     for i,v in enumerate(V):
         if v in fdist:
             ni = sum(TF[i,:]!=0) # ni+1 N+1?
-            out[i] = np.round(tf_ij(fdist[v])*np.log2(N/ni),3)
+            out[i] = tf_ij(fdist[v])*np.log2(N/ni)
     return np.array(out)
 
 def documents_vectors(TF_IDF, U:csc_matrix, invS:csc_matrix)->list:
@@ -155,7 +155,7 @@ else:
 # CSC for column slicing
 TF_IDF = csc_matrix(TF_IDF)                                         
 
-U, S, Vt = svds(TF_IDF, k=2*min(TF_IDF.shape)//3) 
+U, S, Vt = svds(TF_IDF, k=1*min(TF_IDF.shape)//3) 
 U = csc_matrix(U)
 
 invS = np.divide(1,S, out=np.zeros_like(S), where=S!=0)
