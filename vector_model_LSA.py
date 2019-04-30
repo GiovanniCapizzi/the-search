@@ -155,7 +155,7 @@ else:
 # CSC for column slicing
 TF_IDF = csc_matrix(TF_IDF)                                         
 
-U, S, Vt = svds(TF_IDF, k=1*min(TF_IDF.shape)//3) 
+U, S, Vt = svds(TF_IDF, k=1*min(TF_IDF.shape)//4) 
 U = csc_matrix(U)
 
 invS = np.divide(1,S, out=np.zeros_like(S), where=S!=0)
