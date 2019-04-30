@@ -124,7 +124,7 @@ def ranking(query:str, docs:list, U:csc_matrix, invS:csc_matrix)->list:
         ranks.append(sim(doc, qk))
 
     ranks = sorted(enumerate(ranks), key=lambda t: t[1], reverse=True)
-    ranks = list(filter(lambda t: t[1]>0.1, ranks))
+    ranks = list(filter(lambda t: t[1]>0.4, ranks))
     result = []
     for id, _ in ranks:
         res : dict = {}
